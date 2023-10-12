@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "Howest.Mct.Functions": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7240"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 30265,
+      "useSSL": false
+    }
+  }
+}
