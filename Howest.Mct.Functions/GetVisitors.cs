@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
 
 namespace Howest.Mct.Functions;
 
@@ -18,8 +20,10 @@ public static class GetVisitors
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "visitors/{day}")] HttpRequest req,
         ILogger log, string day)
     {
-        var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-        var connection = new SqlConnection(connectionString);
+        var token = await new DefaultAzureCredential().GetTokenAsync(new TokenRequestContext(new[] { "https://database.windows.net/.default" }));
+        
+        var connection = new SqlConnection();
+        connection.AccessToken = token.Token;
         await connection.OpenAsync();
 
         var command = new SqlCommand("SELECT [TijdstipDag], [AantalBezoekers], [DagVanDeWeek] FROM [dbo].[Bezoekers] WHERE [DagVanDeWeek] = @day", connection);

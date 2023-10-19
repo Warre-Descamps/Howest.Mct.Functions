@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Howest.Mct.Models;
 using System.Data.SqlClient;
+using Azure.Core;
+using Azure.Identity;
+using Howest.Mct.Services;
 
 namespace Howest.Mct.Functions;
 
@@ -21,19 +24,23 @@ public static class PostRegistrations
         var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         var request = JsonConvert.DeserializeObject<RegistrationRequest>(requestBody);
 
-        var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-        var connection = new SqlConnection(connectionString);
+        var token = await new DefaultAzureCredential().GetTokenAsync(new TokenRequestContext(new[] { "https://database.windows.net/.default" }));
+        
+        var connection = new SqlConnection(VariableHelper.ConnectionString);
+        connection.AccessToken = token.Token;
         await connection.OpenAsync();
 
-        await using var command = new SqlCommand("INSERT INTO [dbo].[Registrations]([Id], [LastName], [FirstName], [Email], [Zipcode], [Age], [IsFirstTimer]) VALUES(@id, @lastName, @firstName, @email, @zipcode, @age, @isFirstTimer)",
-            connection);
-        command.Parameters.AddWithValue("@id", Guid.NewGuid());
-        command.Parameters.AddWithValue("@lastName", request.LastName);
-        command.Parameters.AddWithValue("@firstName", request.FirstName);
-        command.Parameters.AddWithValue("@email", request.Email);
-        command.Parameters.AddWithValue("@zipcode", request.Zipcode);
-        command.Parameters.AddWithValue("@age", request.Age);
-        command.Parameters.AddWithValue("@isFirstTimer", request.IsFirstTimer);
+        await using var command = new SqlCommand();
+        command.Connection = connection;
+        command.Parameters.Add(new SqlParameter("@id", Guid.NewGuid()));
+        command.Parameters.Add(new SqlParameter("@lastName", request.LastName));
+        command.Parameters.Add(new SqlParameter("@firstName", request.FirstName));
+        command.Parameters.Add(new SqlParameter("@email", request.Email));
+        command.Parameters.Add(new SqlParameter("@zipcode", request.Zipcode));
+        command.Parameters.Add(new SqlParameter("@age", request.Age));
+        command.Parameters.Add(new SqlParameter("@isFirstTimer", request.IsFirstTimer));
+        command.CommandText =
+            "INSERT INTO [dbo].[Registrations]([Id], [LastName], [FirstName], [Email], [Zipcode], [Age], [IsFirstTimer]) VALUES(@id, @lastName, @firstName, @email, @zipcode, @age, @isFirstTimer)";
 
         await command.ExecuteNonQueryAsync();
 

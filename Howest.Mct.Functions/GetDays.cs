@@ -7,21 +7,26 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
+using Howest.Mct.Services;
 
 namespace Howest.Mct.Functions;
 
-public class GetDays
+public static class GetDays
 {
     [FunctionName("GetDays")]
-    public async Task<IActionResult> Run(
+    public static async Task<IActionResult> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "days")] HttpRequest req,
         ILogger log)
     {
-        var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-        var connection = new SqlConnection(connectionString);
+        var token = await new DefaultAzureCredential().GetTokenAsync(new TokenRequestContext(new[] { "https://database.windows.net/.default" }));
+        
+        var connection = new SqlConnection(VariableHelper.DatabaseUrl);
+        connection.AccessToken = token.Token;
         await connection.OpenAsync();
             
-        var command =  new SqlCommand("SELECT [DagVanDeWeek] FROM (SELECT [TijdstipDag], [DagVanDeWeek] FROM [dbo].[Bezoekers] WHERE [TijdstipDag] < 7)", connection);
+        var command =  new SqlCommand("SELECT [DagVanDeWeek] FROM (SELECT [TijdstipDag], [DagVanDeWeek] FROM [dbo].[Bezoekers] WHERE [TijdstipDag] < 7) as TDDVDW", connection);
 
         var days = new List<string>();
         await using (var reader = await command.ExecuteReaderAsync())

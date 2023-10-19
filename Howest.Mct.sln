@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Howest.Mct.Functions", "How
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Functions.Secret", "Howest.Mct.Functions.Secret\Howest.Mct.Functions.Secret.csproj", "{46CB8371-14A5-4414-B28D-C7BACE792F23}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{18B530BA-9489-4E30-B678-B6FFDFDF502E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Services", "Howest.Mct.Services\Howest.Mct.Services.csproj", "{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,10 @@ Global
 		{46CB8371-14A5-4414-B28D-C7BACE792F23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46CB8371-14A5-4414-B28D-C7BACE792F23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46CB8371-14A5-4414-B28D-C7BACE792F23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

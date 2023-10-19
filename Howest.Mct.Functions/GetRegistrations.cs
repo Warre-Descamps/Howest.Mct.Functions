@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Core;
+using Azure.Identity;
+using Howest.Mct.Services;
 
 namespace Howest.Mct.Functions;
 
@@ -20,8 +23,10 @@ public static class GetRegistrations
     {
         try
         {
-            var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-            var connection = new SqlConnection(connectionString);
+            var token = await new DefaultAzureCredential().GetTokenAsync(new TokenRequestContext(new[] { "https://database.windows.net/.default" }));
+        
+            var connection = new SqlConnection(VariableHelper.ConnectionString);
+            connection.AccessToken = token.Token;
             await connection.OpenAsync();
 
             var command = new SqlCommand("SELECT [Id], [LastName], [FirstName], [Email], [Zipcode], [Age], [IsFirstTimer] FROM [dbo].[Registrations]", connection);
