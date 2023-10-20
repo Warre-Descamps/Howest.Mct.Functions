@@ -13,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Services", "Howest.Mct.Services\Howest.Mct.Services.csproj", "{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Functions.CosmosDb.Persons", "Howest.Mct.Functions.CosmosDb.Persons\Howest.Mct.Functions.CosmosDb.Persons.csproj", "{9C5F4725-C4D2-436F-BA7A-2A935BAB1D38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Functions.CosmosDb.Helper", "Howest.Mct.Functions.CosmosDb.Helper\Howest.Mct.Functions.CosmosDb.Helper.csproj", "{75C085DA-5AA0-4B8D-9BF9-5F2BE6856283}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Howest.Mct.Functions.CosmosDb.Tasks", "Howest.Mct.Functions.CosmosDb.Tasks\Howest.Mct.Functions.CosmosDb.Tasks.csproj", "{AF727367-5682-406C-A8CB-F38C44716FEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +41,25 @@ Global
 		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E0D4C0D-4B5B-4820-8A7E-59A24519A037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C5F4725-C4D2-436F-BA7A-2A935BAB1D38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C5F4725-C4D2-436F-BA7A-2A935BAB1D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C5F4725-C4D2-436F-BA7A-2A935BAB1D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C5F4725-C4D2-436F-BA7A-2A935BAB1D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75C085DA-5AA0-4B8D-9BF9-5F2BE6856283}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C085DA-5AA0-4B8D-9BF9-5F2BE6856283}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C085DA-5AA0-4B8D-9BF9-5F2BE6856283}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C085DA-5AA0-4B8D-9BF9-5F2BE6856283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF727367-5682-406C-A8CB-F38C44716FEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF727367-5682-406C-A8CB-F38C44716FEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF727367-5682-406C-A8CB-F38C44716FEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF727367-5682-406C-A8CB-F38C44716FEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3DC1992E-F994-4B8F-8F11-AD93A7101139}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

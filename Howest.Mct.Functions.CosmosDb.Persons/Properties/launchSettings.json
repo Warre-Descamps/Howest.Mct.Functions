@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Howest.Mct.Functions.CosmosDb": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7233",
+      "launchBrowser": false
+    }
+  }
+}
