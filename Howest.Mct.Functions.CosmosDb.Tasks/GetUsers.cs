@@ -14,16 +14,16 @@ using Newtonsoft.Json;
 
 namespace Howest.Mct.Functions.CosmosDb.Tasks;
 
-public static class GetTaskMetadata
+public static class GetUsers
 {
-    [FunctionName("GetTaskMetadata")]
+    [FunctionName("GetUsers")]
     public static async Task<IActionResult> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "task-metadata")] HttpRequest req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "users")] HttpRequest req, ILogger log)
     {
-        var container = CosmosHelper.GetContainer(container: "taskmetadata");
+        var container = CosmosHelper.GetContainer();
 
-        var taskMetadata = await container.GetItems<TaskMetadata>().ToListAsync();
+        var users = await container.GetItems<User>().ToListAsync();
 
-        return new OkObjectResult(taskMetadata);
+        return new OkObjectResult(users);
     }
 }

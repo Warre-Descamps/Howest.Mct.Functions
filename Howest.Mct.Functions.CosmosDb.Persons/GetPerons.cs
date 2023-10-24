@@ -18,7 +18,7 @@ public static class GetPerons
     {
         var container = CosmosHelper.GetContainer();
         
-        var persons = await CosmosHelper.GetItems<Person>(container).ToListAsync();
+        var persons = await container.GetItems<Person>().ToListAsync();
         
         return new OkObjectResult(persons);
     }

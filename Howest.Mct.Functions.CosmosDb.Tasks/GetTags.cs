@@ -20,9 +20,9 @@ public static class GetTags
     public static async Task<IActionResult> RunAsync(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "tags")] HttpRequest req, ILogger log)
     {
-        var container = CosmosHelper.GetContainer();
+        var container = CosmosHelper.GetContainer(container: "taskmetadata");
 
-        var taskTags = await CosmosHelper.GetItems<TaskMetadata>(container, "SELECT * FROM c WHERE c.type = 'TAG'").ToListAsync();
+        var taskTags = await container.GetItems<TaskMetadata>("SELECT * FROM c WHERE c.type = 'TAG'").ToListAsync();
         
         return new OkObjectResult(taskTags);
     }

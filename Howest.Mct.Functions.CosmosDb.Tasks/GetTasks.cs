@@ -11,19 +11,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Task = Howest.Mct.Functions.CosmosDb.Tasks.Models.Task;
 
 namespace Howest.Mct.Functions.CosmosDb.Tasks;
 
-public static class GetTaskMetadata
+public static class GetTasks
 {
-    [FunctionName("GetTaskMetadata")]
+    [FunctionName("GetTasks")]
     public static async Task<IActionResult> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "task-metadata")] HttpRequest req, ILogger log)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "tasks/{userId:Guid}")] HttpRequest req, ILogger log, Guid userId)
     {
-        var container = CosmosHelper.GetContainer(container: "taskmetadata");
+        var container = CosmosHelper.GetContainer(container: "tasks");
 
-        var taskMetadata = await container.GetItems<TaskMetadata>().ToListAsync();
+        var tasks = await container.GetItems<Task>().ToListAsync();
 
-        return new OkObjectResult(taskMetadata);
+        return new OkObjectResult(tasks);
     }
 }

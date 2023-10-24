@@ -22,7 +22,8 @@ public static class UpdatePerson
         person.Id = id;
         var container = CosmosHelper.GetContainer();
 
-        //await CosmosHelper.GetItem<Person>(container, p => p.Id == id);
+        
+        await container.GetItems<Person>(p => p.Id == id);
 
         await container.ReplaceItemAsync(person, id.ToString(), new PartitionKey(id.ToString()));
 

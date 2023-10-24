@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.Azure.Cosmos;
-using Microsoft.Azure.Cosmos.Linq;
 
 namespace Howest.Mct.Functions.CosmosDb.Helper;
 
@@ -9,6 +8,8 @@ public static class CosmosHelper
     private const string ConnectionString = "CosmosConnectionString";
     private const string DatabaseString = "CosmosDatabase";
     private const string ContainerString = "CosmosContainer";
+    
+    private const string SelectAll = "SELECT * FROM c";
 
     private static string? _cosmosConnectionString;
     private static string CosmosConnectionString => _cosmosConnectionString ??= Environment.GetEnvironmentVariable(ConnectionString)
@@ -21,7 +22,7 @@ public static class CosmosHelper
     private static string? _container;
     private static string Container => _container ??= Environment.GetEnvironmentVariable(ContainerString)
                                                       ?? throw new ArgumentNullException($"{ContainerString} is a required value in local.settings!");
-  
+
     public static CosmosClient GetCosmosClient()
     {
         var options = new CosmosClientOptions()
@@ -32,23 +33,29 @@ public static class CosmosHelper
         return new CosmosClient(CosmosConnectionString, options);
     }
 
-    public static Container GetContainer(CosmosClient client)
+    public static Container GetContainer(string container)
     {
-        return client.GetContainer(Database, Container);
+        return GetContainer(null, null, container);
+    }
+    
+    public static Container GetContainer(CosmosClient? client = null, string? database = null, string? container = null)
+    {
+        return (client ?? GetCosmosClient()).GetContainer(database ?? Database, container ?? Container);
     }
 
-    public static Container GetContainer()
-    {
-        return GetContainer(GetCosmosClient());
-    }
-
-    public static IAsyncEnumerable<T> GetItems<T>(Container container)
+    public static IAsyncEnumerable<T> GetItems<T>(this Container container)
         where T : class
     {
-        return GetItems<T>(container, "SELECT * FROM c");
+        return GetItems<T>(container, SelectAll);
     }
 
-    public static async IAsyncEnumerable<T> GetItems<T>(Container container, string query)
+    public static async Task<IList<T>> GetItems<T>(this Container container, Expression<Func<T, bool>> predicate)
+        where T : class
+    {
+        return await container.GetItems<T>($"{SelectAll} WHERE {ExpressionHelper.GetCosmosDbPredicate(predicate)}").ToListAsync();
+    }
+
+    public static async IAsyncEnumerable<T> GetItems<T>(this Container container, string query)
         where T: class
     {
         var iterator = container.GetItemQueryIterator<T>(query);
@@ -62,15 +69,13 @@ public static class CosmosHelper
         }
     }
 
-    /*internal static async Task<T> GetItem<T>(Container container, Expression<Func<T, int, bool>> predicate)
+    public static async Task<T?> GetItem<T>(this Container container, Expression<Func<T, bool>> predicate)
         where T : class, new()
     {
-        Queryable.Where<T>(predicate).ToQueryDefinition().QueryText
-        
-        return GetItem<T>(container, "SELECT * FROM c WHERE ")
-    }*/
+        return await GetItem<T>(container, $"{SelectAll} WHERE {ExpressionHelper.GetCosmosDbPredicate(predicate)}");
+    }
 
-    internal static async Task<T> GetItem<T>(Container container, string query)
+    public static async Task<T?> GetItem<T>(Container container, string query)
         where T: class, new()
     {
         var iterator = container.GetItemQueryIterator<T>(query);

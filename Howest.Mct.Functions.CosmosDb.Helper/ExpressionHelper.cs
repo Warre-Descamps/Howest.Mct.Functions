@@ -1,16 +1,79 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Howest.Mct.Functions.CosmosDb.Helper;
 
-public static class ExpressionHelper
+internal static class ExpressionHelper
 {
-    public static Expression<Func<T, bool>> CreateEqualExpression<T>(string propertyName, object value)
+    /// <summary>
+    /// https://stackoverflow.com/a/53677055
+    /// </summary>
+    private sealed class PredicateVisitor : ExpressionVisitor
     {
-        var param = Expression.Parameter(typeof(T), "x");
-        var member = Expression.Property(param, propertyName);
-        var constant = Expression.Constant(value);
-        var body = Expression.Equal(member, constant);
-        return Expression.Lambda<Func<T, bool>>(body, param);
+        public List<string?> Components { get; } = new();
+    
+        protected override Expression VisitBinary(BinaryExpression node)
+        {
+            Visit(node.Left);
+    
+            Components.Add(GetOperator(node.NodeType));
+    
+            Visit(node.Right);
+    
+            return node;
+        }
+    
+        protected override Expression VisitMember(MemberExpression node)
+        {
+            if (node is { Member: FieldInfo fieldInfo, Expression: ConstantExpression constExpr })
+            {
+                Components.Add(fieldInfo.GetValue(constExpr.Value)?.ToString());
+            }
+            else
+            {
+                Visit(node.Expression);
+                Components.Add($"c['{node.Member.Name}']");
+            }
+    
+            return node;
+        }
+    
+        protected override Expression VisitConstant(ConstantExpression node)
+        {
+            Components.Add($"'{node.Value}'");
+    
+            return node;
+        }
+    
+        private static string GetOperator(ExpressionType type)
+        {
+            return type switch
+            {
+                ExpressionType.Equal => "=",
+                ExpressionType.Not => "!",
+                ExpressionType.NotEqual => "!=",
+                ExpressionType.GreaterThan => ">",
+                ExpressionType.GreaterThanOrEqual => ">=",
+                ExpressionType.LessThan => "<",
+                ExpressionType.LessThanOrEqual => "<=",
+                ExpressionType.Or => "or",
+                ExpressionType.OrElse => "or",
+                ExpressionType.And => "and",
+                ExpressionType.AndAlso => "and",
+                ExpressionType.Add => "+",
+                ExpressionType.AddAssign => "+",
+                ExpressionType.Subtract => "-",
+                ExpressionType.SubtractAssign => "-",
+                _ => "???"
+            };
+        }
+    }
+
+    public static string GetCosmosDbPredicate<T>(Expression<Func<T, bool>> predicate)
+    {
+        var visitor = new PredicateVisitor();
+        visitor.Visit(predicate);
+        return string.Join(" ", visitor.Components);
     }
 }
